@@ -40,10 +40,6 @@ class CatBot(discord.Client):
         super().__init__(intents=intents)
         self.tree = app_commands.CommandTree(self)
 
-    async def setup_hook(self):
-        await self.tree.sync()
-        print("Comandos sincronizados!")
-
 bot = CatBot()
 
 @bot.event
@@ -51,6 +47,12 @@ async def on_ready():
     print(f"Logado como {bot.user.name}")
     for guild in bot.guilds:
         print(f"- {guild.name} ({guild.id})")
+    try:
+        synced = await bot.tree.sync()
+        print(f"Comandos sincronizados: {[cmd.name for cmd in synced]}")
+    except Exception as e:
+        print(f"Erro ao sincronizar comandos: {e}")
+
     send_daily_cat_picture.start()
 
 # Comando /miau
@@ -109,7 +111,6 @@ async def send_daily_cat_picture():
 async def main():
     Thread(target=app.run, kwargs={"host": "0.0.0.0", "port": PORT, "debug": False}).start()
     await bot.start(DISCORD_BOT_TOKEN)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
