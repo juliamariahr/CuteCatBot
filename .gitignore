@@ -210,3 +210,5 @@ canal_storage/
 
 # Render build artifacts
 render.yaml
+
+daily_channels.json
